@@ -3,8 +3,8 @@ session_start();
 ob_start();
 include 'conn.php';
 
-const BOT_USERNAME = '******'; // telegramdan alınan bot kullanıcı adı
-const BOT_TOKEN = '******'; // telegram apiden alınan token
+const BOT_USERNAME = '---bot-adi---';
+const BOT_TOKEN = '---bot--token---';
 
 /**
  * @throws Exception
@@ -148,4 +148,12 @@ function BildirimKaydet($kid, $mid, $durum){
     ));
     $hata = $bsql->errorInfo();
     return empty($hata[2]) ? true : LogYaz('SQL Bildirim Kaydet', $hata[2], 'Hata');
+}
+
+function KullaniciIptal ($kid){
+    global $db;
+    $ksql = $db->prepare("update kullanicilar set zaman =0 where id=:kid");
+    $ksql->execute(array("kid"=>$kid));
+    $hata = $ksql->errorInfo();
+    return empty($hata[2]) ? true : LogYaz('SQL Kullanici Iptal', $hata[2], 'Hata');
 }

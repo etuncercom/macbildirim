@@ -29,7 +29,19 @@ $tsql = $db->query("select r_ad from takimlar");
 while ($getir=$tsql->fetch(PDO::FETCH_ASSOC)){
 
 
-    $gjson = json_decode(file_get_contents("https://beinsports.com.tr/_next/data/323/tr-TR/takim/{$getir['r_ad']}.json"),true);
+    $gelenVeri = file_get_contents("https://beinsports.com.tr/_next/data/326/tr-TR/takim/{$getir['r_ad']}.json");
+    $json_yolu = "/home/etuncerc/public_html/macbildirim/json/{$getir['r_ad']}.json";
+
+    $yol = fopen($json_yolu,"c+");
+    $yaz = fwrite($yol,$gelenVeri);
+    fclose($yol);
+    echo (!$yaz) ? "dosya yazilamadi <br>" : "dosya yazildi <br>" ;
+
+    $dosya_ac 	= fopen($json_yolu,"r+");
+    $dosya_oku	= fread($dosya_ac,filesize($json_yolu));
+    fclose($dosya_ac);
+    $gjson 	= json_decode($dosya_oku, true);
+
     $maclar = $gjson['pageProps']['data']['fixtures']['data'];
     $takim = $gjson['pageProps']['rewriteId'];
 
